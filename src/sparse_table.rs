@@ -100,4 +100,17 @@ impl<T, ID: std::cmp::PartialEq + std::fmt::Debug + U64Id + Copy> Table<T, ID>
     fn all_mut(&mut self) -> Box<dyn Iterator<Item = &mut T> + '_> {
         Box::new(self.data.iter_mut().filter(|e| e.busy).map(|e| &mut e.data))
     }
+
+    fn all_enumerated(&self) -> Box<dyn Iterator<Item = (ID, &T)> + '_> {
+        Box::new(self.data.iter().filter(|e| e.busy).map(|e| (e.id, &e.data)))
+    }
+
+    fn all_mut_enumerated(&mut self) -> Box<dyn Iterator<Item = (ID, &mut T)> + '_> {
+        Box::new(
+            self.data
+                .iter_mut()
+                .filter(|e| e.busy)
+                .map(|e| (e.id, &mut e.data)),
+        )
+    }
 }
