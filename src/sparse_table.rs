@@ -1,4 +1,4 @@
-use crate::{Table, U64Id};
+pub use crate::{Table, U64Id};
 
 pub struct SparseTableEntry<T, ID> {
     pub id: ID,
@@ -87,6 +87,10 @@ impl<T, ID: std::cmp::PartialEq + std::fmt::Debug + U64Id + Copy> Table<T, ID>
             .filter(|e| e.id == id)
             .last()
             .map(|e| &e.data)
+    }
+
+    fn set_by_id(&mut self, id: ID, item: T) {
+        self.data[id.get_id() as usize] = SparseTableEntry::new(id, item, true);
     }
 
     fn all(&self) -> Box<dyn Iterator<Item = &T> + '_> {

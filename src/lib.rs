@@ -8,6 +8,8 @@ pub trait Table<T, ID> {
 
     fn get_by_id(&self, id: ID) -> Option<&T>;
 
+    fn set_by_id(&mut self, id: ID, item: T);
+
     fn all(&self) -> Box<dyn Iterator<Item = &T> + '_>;
 
     fn all_mut(&mut self) -> Box<dyn Iterator<Item = &mut T> + '_>;

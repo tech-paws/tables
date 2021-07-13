@@ -1,4 +1,4 @@
-use crate::{Table, TableEntry};
+pub use crate::{Table, TableEntry};
 
 pub struct LinearTable<T, ID> {
     ids: Vec<ID>,
@@ -25,9 +25,15 @@ impl<T, ID> LinearTable<T, ID> {
 impl<T, ID: std::cmp::PartialEq + std::fmt::Debug> LinearTable<T, ID> {
     #[cfg(debug_assertions)]
     fn validate_uniqueness(&self, new_id: ID) {
+        let mut found = false;
+
         for id in self.ids.iter() {
             if *id == new_id {
-                panic!("Id already exists: {:?}", new_id);
+                if found {
+                    panic!("Id already exists: {:?}", new_id);
+                } else {
+                    found = true;
+                }
             }
         }
     }
@@ -54,9 +60,9 @@ impl<'a, T, ID> Iterator for LinearTableAllIter<'a, T, ID> {
 // TODO(sysint64): write tests
 impl<T, ID: std::cmp::PartialEq + std::fmt::Debug + Copy> Table<T, ID> for LinearTable<T, ID> {
     fn push(&mut self, item: T, id: ID) {
+        self.ids.push(id);
         #[cfg(debug_assertions)]
         self.validate_uniqueness(id);
-        self.ids.push(id);
         self.visible.push(TableEntry::new(id, item));
     }
 
@@ -72,6 +78,18 @@ impl<T, ID: std::cmp::PartialEq + std::fmt::Debug + Copy> Table<T, ID> for Linea
             .filter(|e| e.id == id)
             .last()
             .map(|e| &e.data)
+    }
+
+    fn set_by_id(&mut self, id: ID, item: T) {
+        #[cfg(debug_assertions)]
+        self.validate_uniqueness(id);
+
+        for data in self.visible.iter_mut() {
+            if data.id == id {
+                *data = TableEntry::new(id, item);
+                break;
+            }
+        }
     }
 
     fn all(&self) -> Box<dyn Iterator<Item = &T> + '_> {
