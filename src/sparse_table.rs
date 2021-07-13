@@ -1,4 +1,4 @@
-use crate::{Table, U64ID};
+use crate::{Table, U64Id};
 
 pub struct SparseTableEntry<T, ID> {
     pub id: ID,
@@ -65,7 +65,7 @@ impl<T, ID: std::cmp::PartialEq + std::fmt::Debug> SparseTable<T, ID> {
     }
 }
 
-impl<T, ID: std::cmp::PartialEq + std::fmt::Debug + U64ID + Copy> Table<T, ID>
+impl<T, ID: std::cmp::PartialEq + std::fmt::Debug + U64Id + Copy> Table<T, ID>
     for SparseTable<T, ID>
 {
     fn push(&mut self, item: T, id: ID) {
