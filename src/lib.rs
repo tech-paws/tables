@@ -13,7 +13,7 @@ pub trait Table<T, ID> {
     fn all_mut(&mut self) -> Box<dyn Iterator<Item = &mut T> + '_>;
 }
 
-pub trait U64ID {
+pub trait U64Id {
     fn get_id(&self) -> u64;
 }
 
