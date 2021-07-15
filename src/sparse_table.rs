@@ -81,7 +81,7 @@ impl<T, ID: std::cmp::PartialEq + std::fmt::Debug + U64Id + Copy> Table<T, ID>
         }
     }
 
-    fn get_by_id(&self, id: ID) -> Option<&T> {
+    fn try_get_by_id(&self, id: ID) -> Option<&T> {
         self.data
             .iter()
             .filter(|e| e.id == id)

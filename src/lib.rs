@@ -6,7 +6,11 @@ pub trait Table<T, ID> {
 
     fn delete_by_id(&mut self, id: ID);
 
-    fn get_by_id(&self, id: ID) -> Option<&T>;
+    fn try_get_by_id(&self, id: ID) -> Option<&T>;
+
+    fn get_by_id(&self, id: ID) -> &T {
+        self.try_get_by_id(id).unwrap()
+    }
 
     fn set_by_id(&mut self, id: ID, item: T);
 

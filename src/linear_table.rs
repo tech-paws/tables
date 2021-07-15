@@ -72,7 +72,7 @@ impl<T, ID: std::cmp::PartialEq + std::fmt::Debug + Copy> Table<T, ID> for Linea
         self.invisible.retain(|element| element.id != target_id);
     }
 
-    fn get_by_id(&self, id: ID) -> Option<&T> {
+    fn try_get_by_id(&self, id: ID) -> Option<&T> {
         self.visible
             .iter()
             .filter(|e| e.id == id)
