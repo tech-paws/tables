@@ -113,4 +113,8 @@ impl<T, ID: std::cmp::PartialEq + std::fmt::Debug + U64Id + Copy> Table<T, ID>
                 .map(|e| (e.id, &mut e.data)),
         )
     }
+
+    fn len(&self) -> usize {
+        self.data.len()
+    }
 }

@@ -2,7 +2,7 @@ pub use crate::{Table, TableEntry};
 
 pub struct LinearTable<T, ID> {
     ids: Vec<ID>,
-    visible: Vec<TableEntry<T, ID>>,
+    data: Vec<TableEntry<T, ID>>,
     invisible: Vec<TableEntry<T, ID>>,
 }
 
@@ -16,7 +16,7 @@ impl<T, ID> LinearTable<T, ID> {
     pub fn new() -> Self {
         Self {
             ids: Vec::new(),
-            visible: Vec::new(),
+            data: Vec::new(),
             invisible: Vec::new(),
         }
     }
@@ -63,17 +63,17 @@ impl<T, ID: std::cmp::PartialEq + std::fmt::Debug + Copy> Table<T, ID> for Linea
         self.ids.push(id);
         #[cfg(debug_assertions)]
         self.validate_uniqueness(id);
-        self.visible.push(TableEntry::new(id, item));
+        self.data.push(TableEntry::new(id, item));
     }
 
     fn delete_by_id(&mut self, target_id: ID) {
         self.ids.retain(|id| *id != target_id);
-        self.visible.retain(|element| element.id != target_id);
+        self.data.retain(|element| element.id != target_id);
         self.invisible.retain(|element| element.id != target_id);
     }
 
     fn try_get_by_id(&self, id: ID) -> Option<&T> {
-        self.visible
+        self.data
             .iter()
             .filter(|e| e.id == id)
             .last()
@@ -84,7 +84,7 @@ impl<T, ID: std::cmp::PartialEq + std::fmt::Debug + Copy> Table<T, ID> for Linea
         #[cfg(debug_assertions)]
         self.validate_uniqueness(id);
 
-        for data in self.visible.iter_mut() {
+        for data in self.data.iter_mut() {
             if data.id == id {
                 *data = TableEntry::new(id, item);
                 break;
@@ -93,18 +93,22 @@ impl<T, ID: std::cmp::PartialEq + std::fmt::Debug + Copy> Table<T, ID> for Linea
     }
 
     fn all(&self) -> Box<dyn Iterator<Item = &T> + '_> {
-        Box::new(self.visible.iter().map(|e| &e.data))
+        Box::new(self.data.iter().map(|e| &e.data))
     }
 
     fn all_mut(&mut self) -> Box<dyn Iterator<Item = &mut T> + '_> {
-        Box::new(self.visible.iter_mut().map(|e| &mut e.data))
+        Box::new(self.data.iter_mut().map(|e| &mut e.data))
     }
 
     fn all_enumerated(&self) -> Box<dyn Iterator<Item = (ID, &T)> + '_> {
-        Box::new(self.visible.iter().map(|e| (e.id, &e.data)))
+        Box::new(self.data.iter().map(|e| (e.id, &e.data)))
     }
 
     fn all_mut_enumerated(&mut self) -> Box<dyn Iterator<Item = (ID, &mut T)> + '_> {
-        Box::new(self.visible.iter_mut().map(|e| (e.id, &mut e.data)))
+        Box::new(self.data.iter_mut().map(|e| (e.id, &mut e.data)))
+    }
+
+    fn len(&self) -> usize {
+        self.data.len()
     }
 }

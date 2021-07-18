@@ -21,6 +21,8 @@ pub trait Table<T, ID> {
     fn all_mut(&mut self) -> Box<dyn Iterator<Item = &mut T> + '_>;
 
     fn all_mut_enumerated(&mut self) -> Box<dyn Iterator<Item = (ID, &mut T)> + '_>;
+
+    fn len(&self) -> usize;
 }
 
 pub trait U64Id {
